@@ -34,7 +34,7 @@ end
 local user = os.getenv("USER") or "user"
 local hostname = read_first_line("/proc/sys/kernel/hostname") or "hostname"
 local colored_hostname = "\x1b[1;36m" .. hostname .. "\x1b[1;00m"
-local os_name = (read_first_line("/etc/os-release") or "NAME=\"UNKNOWN LINUX\""):match('NAME="([^"]+)"') or "Unknown Linux"
+local os_name = (read_first_line("/etc/os-release") or "NAME=\"no-osrelease\""):match('NAME="([^"]+)"') or "couldntmatchfirstline"
 local kernel = read_first_line("/proc/sys/kernel/osrelease") or "couldnt detect"
 local uptime = gupt()
 local shell = string.match(os.getenv("SHELL") or "", "([^/]+)$") or "couldnt detect"
@@ -49,7 +49,7 @@ end
 
 local userathost = user .. "@" .. hostname
 local colored_userathost = colored_user .. "@" .. colored_hostname
-
+os_name = "couldntmatchfirstline"
 if os_name == "Arch Linux" then
     logo = {
         "\x1b[36m       /\\      \x1b[39m",
@@ -60,15 +60,25 @@ if os_name == "Arch Linux" then
         "\x1b[36m  /   |  |  -\\ \x1b[39m",
         "\x1b[36m /_--'    '--_\\\x1b[39m"
     } 
-else
+elseif os_name == "Archcraft" then
+logo = {
+    "\x1b[36m       /\\      \x1b[39m",
+    "\x1b[36m      /  \\     \x1b[39m",
+    "\x1b[36m     /\\   \\    \x1b[39m",
+    "\x1b[36m    /  \x1b[33m()\x1b[36m  \\   \x1b[39m",
+    "\x1b[36m   /   __   \\  \x1b[39m",
+    "\x1b[36m  /   |  |  -\\ \x1b[39m",
+    "\x1b[36m /_--'    '--_\\\x1b[39m"
+}
+elseif os_name == "couldntmatchfirstline" or os_name == "no-osrelease" then
     logo = {
-        "\x1b[38;5;214m     .--.      \x1b[39m",
-        "\x1b[38;5;214m    |o_o |     \x1b[39m",
-        "\x1b[38;5;214m    |    |     \x1b[39m",
-        "\x1b[38;5;214m   //   \\ \\    \x1b[39m",
-        "\x1b[38;5;214m  (|     | )   \x1b[39m",
-        "\x1b[38;5;214m /'\\_   _/`\\   \x1b[39m",
-        "\x1b[38;5;214m \\___)=(___/   \x1b[39m"
+        "\x1b[38;5;196m     .--.      \x1b[39m",
+        "\x1b[38;5;196m    |    |     \x1b[39m",
+        "\x1b[38;5;196m    .    |     \x1b[39m",
+        "\x1b[38;5;196m        /      \x1b[39m",
+        "\x1b[38;5;196m       /       \x1b[39m",
+        "\x1b[38;5;196m       |       \x1b[39m",
+        "\x1b[38;5;196m       .       \x1b[39m"
     }
 end
 -- Prepare the system information lines
