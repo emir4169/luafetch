@@ -24,7 +24,8 @@ local function gupt()
         local days = math.floor(seconds / 86400)
         local hours = math.floor((seconds % 86400) / 3600)
         local minutes = math.floor((seconds % 3600) / 60)
-        return string.format("%d days, %d hours, %d minutes", days, hours, minutes)
+        local rsec = math.floor((seconds % 60))
+        return string.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,rsec)
     end
     return "Couldnt detect uptime"
 end
