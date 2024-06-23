@@ -7,7 +7,16 @@ local function read_first_line(filepath)
     end
     return nil
 end
-
+local function read_memory_info()
+    local mem_total = read_first_line("/proc/meminfo"):match("MemTotal:%s+(%d+)")
+    if mem_total then
+        local kb = tonumber(mem_total)
+        local mb = kb / 1024
+        local gb = mb / 1024
+        return string.format("%d GB ( %d MB )", math.ceil(gb), math.ceil(mb))
+    end
+    return "Couldn't fetch MemTotal from /proc/meminfo"
+end
 local function gupt()
     local uptime_seconds = read_first_line("/proc/uptime"):match("^(%d+)")
     if uptime_seconds then
@@ -27,7 +36,7 @@ end
 
 -- Function to left pad a string with spaces
 local function leftpad(str, spaces)
-    return string.rep(" ", spaces) .. str
+    return repeat_string_times(" ", spaces) .. str
 end
 
 -- Get system information
@@ -39,6 +48,7 @@ local kernel = read_first_line("/proc/sys/kernel/osrelease") or "couldnt detect"
 local uptime = gupt()
 local shell = string.match(os.getenv("SHELL") or "", "([^/]+)$") or "couldnt detect"
 local terminal = os.getenv("TERM") or "unknown"
+local memory_info = read_memory_info()
 
 local colored_user = user
 if user == "root" then
@@ -46,7 +56,7 @@ if user == "root" then
 else
     colored_user = "\x1b[1;32m" .. user .. "\x1b[1;39m"
 end
-
+--os_name = "Archcraft"
 local userathost = user .. "@" .. hostname
 local colored_userathost = colored_user .. "@" .. colored_hostname
 if os_name == "Arch Linux" then
@@ -55,29 +65,32 @@ if os_name == "Arch Linux" then
         "\x1b[36m      /  \\     \x1b[39m",
         "\x1b[36m     /\\   \\    \x1b[39m",
         "\x1b[36m    /      \\   \x1b[39m",
-        "\x1b[36m   /   __   \\  \x1b[39m",
-        "\x1b[36m  /   |  |  -\\ \x1b[39m",
-        "\x1b[36m /_--'    '--_\\\x1b[39m"
+        "\x1b[36m   /        \\   \x1b[39m",
+        "\x1b[36m  /    __    \\  \x1b[39m",
+        "\x1b[36m /    |  |  - \\ \x1b[39m",
+        "\x1b[36m/__--'    '--__\\\x1b[39m"
     } 
 elseif os_name == "Archcraft" then
 logo = {
-    "\x1b[36m       /\\      \x1b[39m",
-    "\x1b[36m      /  \\     \x1b[39m",
-    "\x1b[36m     /\\   \\    \x1b[39m",
-    "\x1b[36m    /  \x1b[33m()\x1b[36m  \\   \x1b[39m",
-    "\x1b[36m   /   __   \\  \x1b[39m",
-    "\x1b[36m  /   |  |  -\\ \x1b[39m",
-    "\x1b[36m /_--'    '--_\\\x1b[39m"
+    "\x1b[38;5;43m       /\\      \x1b[39m",
+    "\x1b[38;5;42m      /  \\     \x1b[39m",
+    "\x1b[38;5;41m     /\\   \\    \x1b[39m",
+    "\x1b[38;5;40m    /  \x1b[33m()\x1b[38;5;40m  \\   \x1b[39m",
+    "\x1b[38;5;39m   /        \\   \x1b[39m",
+    "\x1b[38;5;38m  /    __    \\  \x1b[39m",
+    "\x1b[38;5;37m /    |  |  - \\ \x1b[39m",
+    "\x1b[38;5;36m/__--'    '--__\\\x1b[39m"
 }
 elseif os_name == "couldntmatchfirstline" or os_name == "no-osrelease" then
     logo = {
-        "\x1b[38;5;196m     .--.      \x1b[39m",
-        "\x1b[38;5;196m    |    |     \x1b[39m",
-        "\x1b[38;5;196m    .    |     \x1b[39m",
+        "\x1b[38;5;196m    .---.      \x1b[39m",
+        "\x1b[38;5;196m   |     |     \x1b[39m",
+        "\x1b[38;5;196m   .     |     \x1b[39m",
         "\x1b[38;5;196m        /      \x1b[39m",
         "\x1b[38;5;196m       /       \x1b[39m",
-        "\x1b[38;5;196m       |       \x1b[39m",
-        "\x1b[38;5;196m       .       \x1b[39m"
+        "\x1b[38;5;196m      |        \x1b[39m",
+        "\x1b[38;5;196m      .        \x1b[39m"
+
     }
 end
 -- Prepare the system information lines
@@ -88,7 +101,8 @@ local sys_info = {
     "Kernel: " .. kernel,
     "Uptime: " .. uptime,
     "Shell: " .. shell,
-    "Terminal: " .. terminal
+    "Terminal: " .. terminal,
+    "Total Memory: " .. memory_info
 }
 
 -- Determine the maximum number of lines
