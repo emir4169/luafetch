@@ -20,12 +20,18 @@ end
 local function gupt()
     local uptime_seconds = read_first_line("/proc/uptime"):match("^(%d+)")
     if uptime_seconds then
+        local str = ""
         local seconds = tonumber(uptime_seconds)
         local days = math.floor(seconds / 86400)
         local hours = math.floor((seconds % 86400) / 3600)
         local minutes = math.floor((seconds % 3600) / 60)
         local rsec = math.floor((seconds % 60))
-        return string.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,rsec)
+        if days ~= 0 then str = string.format("%d days, ", days) end
+        if hours ~= 0 then str = str..string.format("%d hours, ", hours) end
+        if minutes ~= 0 then str = str..string.format("%d minutes, ", minutes) end
+        if rsec ~= 0 then str = str..string.format("%d seconds, ", rsec) end
+        return str
+        --return string.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,rsec)
     end
     return "Couldnt detect uptime"
 end
