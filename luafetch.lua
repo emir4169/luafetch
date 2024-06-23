@@ -49,7 +49,6 @@ end
 
 local userathost = user .. "@" .. hostname
 local colored_userathost = colored_user .. "@" .. colored_hostname
-os_name = "couldntmatchfirstline"
 if os_name == "Arch Linux" then
     logo = {
         "\x1b[36m       /\\      \x1b[39m",
