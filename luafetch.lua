@@ -85,7 +85,7 @@ logo = {
     "\x1b[38;5;40m    /  \x1b[33m()\x1b[38;5;40m  \\   \x1b[39m",
     "\x1b[38;5;39m   /        \\   \x1b[39m",
     "\x1b[38;5;38m  /    __    \\  \x1b[39m",
-    "\x1b[38;5;37m /    |  |  - \\ \x1b[39m",
+    "\x1b[38;5;37m /    |  |   /\\ \x1b[39m",
     "\x1b[38;5;36m/__--'    '--__\\\x1b[39m"
 }
 elseif os_name == "couldntmatchfirstline" or os_name == "no-osrelease" then
