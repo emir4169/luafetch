@@ -1,3 +1,6 @@
+local io = require "io"
+local math = require "math"
+local os = require "os"
 local function read_first_line(filepath)
     local file = io.open(filepath, "r")
     if file then
