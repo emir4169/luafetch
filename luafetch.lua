@@ -33,7 +33,7 @@ local function gupt()
         if hours ~= 0 then str = str..string.format("%d hours, ", hours) end
         if minutes ~= 0 then str = str..string.format("%d minutes, ", minutes) end
         if rsec ~= 0 then str = str..string.format("%d seconds, ", rsec) end
-        return str
+        return str or "0"
         --return string.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,rsec)
     end
     return "Couldnt detect uptime"
