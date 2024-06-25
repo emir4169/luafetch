@@ -56,12 +56,41 @@ end
 local function leftpad(str, spaces)
     return repeat_string_times(" ", spaces) .. str
 end
+local function get_android_version()
+    if is_directory("/system/app/") and is_directory("/system/priv-app/") then
+        local version_file = io.open("/system/build.prop", "r")
+        local version = nil
 
+        if version_file then
+            for line in version_file:lines() do
+                if line:match("ro%.build%.version%.release=") then
+                    version = line:match("ro%.build%.version%.release=(.*)")
+                    break
+                end
+            end
+            version_file:close()
+        end
+
+        if version then
+            return "Android " .. version
+        else
+            return "Android version not found"
+        end
+    else
+        return 1
+    end
+end
 -- Get system information
 local user = os.getenv("USER") or "user"
 local hostname = read_first_line("/proc/sys/kernel/hostname") or "hostname"
 local colored_hostname = "\x1b[1;36m" .. hostname .. "\x1b[1;00m"
 local os_name = (read_first_line("/etc/os-release") or "NAME=\"no-osrelease\""):match('NAME="([^"]+)"') or "couldntmatchfirstline"
+if os_name == "no-osrelease" then
+    andver = get_android_version()
+    if andver ~= 1 then
+        os_name = andver
+    end
+end
 local kernel = read_first_line("/proc/sys/kernel/osrelease") or "couldnt detect"
 local uptime = gupt()
 local shell = string.match(os.getenv("SHELL") or "", "([^/]+)$") or "couldnt detect"
@@ -74,9 +103,19 @@ if user == "root" then
 else
     colored_user = "\x1b[1;32m" .. user .. "\x1b[1;39m"
 end
---os_name = "Archcraft"
+os_name = "android"
 local userathost = user .. "@" .. hostname
 local colored_userathost = colored_user .. "@" .. colored_hostname
+logo = {
+    "\x1b[38;5;214m     .--.      \x1b[39m",
+    "\x1b[38;5;214m    |o_o |     \x1b[39m",
+    "\x1b[38;5;214m    |    |     \x1b[39m",
+    "\x1b[38;5;214m    |    |     \x1b[39m",
+    "\x1b[38;5;214m   //   \\ \\    \x1b[39m",
+    "\x1b[38;5;214m  (|     | )   \x1b[39m",
+    "\x1b[38;5;214m /'\\_   _/`\\   \x1b[39m",
+    "\x1b[38;5;214m \\___)=(___/   \x1b[39m"
+}
 if os_name == "Arch Linux" then
     logo = {
         "\x1b[36m       /\\      \x1b[39m",
@@ -109,6 +148,17 @@ elseif os_name == "couldntmatchfirstline" or os_name == "no-osrelease" then
         "\x1b[38;5;196m      |        \x1b[39m",
         "\x1b[38;5;196m      |        \x1b[39m",
         "\x1b[38;5;196m      .        \x1b[39m"
+    }
+elseif string.match(os_name:lower(), "android") then
+    logo = {
+        "\x1b[38;5;46m   ;,           ,;   \x1b[39m",
+        "\x1b[38;5;46m    ';,.-----.,;'    \x1b[39m",
+        "\x1b[38;5;46m   ,'           ',   \x1b[39m",
+        "\x1b[38;5;46m  /  ()       ()  \\  \x1b[39m",
+        "\x1b[38;5;46m |                 | \x1b[39m",
+        "\x1b[38;5;46m |                 | \x1b[39m",
+        "\x1b[38;5;46m |                 | \x1b[39m",
+        "\x1b[38;5;46m '-----------------' \x1b[39m"
     }
 end
 -- Prepare the system information lines
