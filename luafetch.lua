@@ -10,30 +10,38 @@ local function read_first_line(filepath)
     end
     return nil
 end
+function math.round(x)
+    return x>=0 and math.floor(x+0.5) or math.ceil(x-0.5)
+  end
+  
+local mem_total = ( read_first_line("/proc/meminfo") or "MemTotal:       00000000 kB" ):match("MemTotal:%s+(%d+)")
 local function read_memory_info()
-    local mem_total = read_first_line("/proc/meminfo"):match("MemTotal:%s+(%d+)")
     if mem_total then
         local kb = tonumber(mem_total)
         local mb = kb / 1024
         local gb = mb / 1024
-        return string.format("%d GB ( %d MB )", math.ceil(gb), math.ceil(mb))
+        return string.format("%d GB ( %d MB ( %d KB ) )", math.round(gb), math.round(mb), math.round(kb))
     end
     return "Couldn't fetch MemTotal from /proc/meminfo"
 end
 local function gupt()
-    local uptime_seconds = read_first_line("/proc/uptime"):match("^(%d+)")
+    local uptimeline = read_first_line("/proc/uptime") or "0 0"
+    local uptime_seconds = uptimeline:match("^(%d+)")
     if uptime_seconds then
         local str = ""
         local seconds = tonumber(uptime_seconds)
-        local days = math.floor(seconds / 86400)
-        local hours = math.floor((seconds % 86400) / 3600)
-        local minutes = math.floor((seconds % 3600) / 60)
-        local rsec = math.floor((seconds % 60))
+        local days = math.round(seconds / 86400)
+        local hours = math.round((seconds % 86400) / 3600)
+        local minutes = math.round((seconds % 3600) / 60)
+        local rsec = math.round((seconds % 60))
         if days ~= 0 then str = string.format("%d days, ", days) end
         if hours ~= 0 then str = str..string.format("%d hours, ", hours) end
         if minutes ~= 0 then str = str..string.format("%d minutes, ", minutes) end
-        if rsec ~= 0 then str = str..string.format("%d seconds", rsec) end
-        return str or "0"
+        if rsec ~= 0 then str = str..string.format("%d seconds ", rsec) end
+        if str == "" then
+            str = "0 seconds"
+        end
+        return str
         --return string.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,rsec)
     end
     return "Couldnt detect uptime"
@@ -99,8 +107,8 @@ elseif os_name == "couldntmatchfirstline" or os_name == "no-osrelease" then
         "\x1b[38;5;196m        /      \x1b[39m",
         "\x1b[38;5;196m       /       \x1b[39m",
         "\x1b[38;5;196m      |        \x1b[39m",
+        "\x1b[38;5;196m      |        \x1b[39m",
         "\x1b[38;5;196m      .        \x1b[39m"
-
     }
 end
 -- Prepare the system information lines
