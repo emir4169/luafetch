@@ -51,6 +51,14 @@ end
 local function repeat_string_times(str, times)
     return string.rep(str, times)
 end
+function is_directory(path)
+    local f = io.open(path, "r")
+    if f then
+        f:close()
+        return true
+    end
+    return false
+end
 
 -- Function to left pad a string with spaces
 local function leftpad(str, spaces)
@@ -103,7 +111,7 @@ if user == "root" then
 else
     colored_user = "\x1b[1;32m" .. user .. "\x1b[1;39m"
 end
-os_name = "android"
+--os_name = "android"
 local userathost = user .. "@" .. hostname
 local colored_userathost = colored_user .. "@" .. colored_hostname
 logo = {
