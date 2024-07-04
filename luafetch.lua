@@ -126,8 +126,8 @@ logo = {
 }
 if os_name == "Arch Linux" then
     logo = {
-        "\x1b[36m       /\\      \x1b[39m",
-        "\x1b[36m      /  \\     \x1b[39m",
+        "\x1b[36m       /\\       \x1b[39m",
+        "\x1b[36m      /  \\      \x1b[39m",
         "\x1b[36m     /\\   \\     \x1b[39m",
         "\x1b[36m    /      \\    \x1b[39m",
         "\x1b[36m   /        \\   \x1b[39m",
